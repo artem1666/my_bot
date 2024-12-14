@@ -3,12 +3,11 @@ import random
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import json
-import os
 import webbrowser
 
 
 #ОТКРЫТИЕ ТГ
-#webbrowser.open('https://t.me/Teacher0fEnglishBot')
+webbrowser.open('https://t.me/Teacher0fEnglishBot')
 
 
 #СОЗДАНИЕ БОТА
@@ -18,18 +17,12 @@ dp = Dispatcher(bot=bot)
 
 ##CОЗДАНИЕ СПИСКА СЛОВ
 words = {}
-"""
-dict: Глобальная переменная, словарь с английскими словами и их переводами.
-"""
 with open("words.json", "r", encoding="utf-8") as f:
     words = json.load(f)
 
 
 #СОЗДАНИЕ СПИСКА ПРАВИЛ
 grammar_rules = {}
-"""
-dict: Глобальная переменная, словарь с грамматическими правилами по уровням и темам.
-"""
 with open("grammar_rules.json", "r", encoding="utf-8") as f:
     grammar_rules = json.load(f)
         
@@ -37,14 +30,6 @@ with open("grammar_rules.json", "r", encoding="utf-8") as f:
 ##ФУНКЦИЯ ДЛЯ СТАРТА
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    """
-    Обработчик команды /start.
-
-    Отправляет пользователю приветственное сообщение.
-
-    :param message: Объект сообщения Telegram.
-    :returns: None.
-    """
     await message.answer("Hello! I am a bot for learning English.")
     await message.answer("I'll help you with your language studies.\
 To find out what I can do, write /help")
@@ -53,14 +38,6 @@ To find out what I can do, write /help")
 ##ФУНКЦИЯ ДЛЯ ОПРЕДЕЛЕНИЯ ВОЗМОЖНОСТЕЙ БОТА
 @dp.message(Command('help'))
 async def cmd_help(message: types.Message):
-    """
-    Обработчик команды /help.
-
-    Отправляет пользователю сообщение с доступными командами.
-
-    :param message: Объект сообщения Telegram.
-    :returns: None.
-    """
     await message.answer("That's all I can do to help you:\nYou can\
  see the list of the most necessary basic words - /words\nYou can also add\
  the words with translation to the list - /add\nYou can take\
@@ -71,14 +48,6 @@ async def cmd_help(message: types.Message):
 ##ВЫВОД СПИСКА СЛОВ
 @dp.message(Command("words"))
 async def cmd_words(message: types.Message):
-    """
-    Обработчик команды /words.
-
-    Отображает список всех сохраненных слов и их переводов, если они есть, или сообщение о пустом списке.
-
-    :param message: Объект сообщения Telegram.
-    :returns: str: Строка со списком слов и их переводов или сообщение о пустом списке.
-    """
     output_text = "List of words with translation:\n\n"
     for word, data in words.items():
         translation = data.get("translation") 
@@ -90,16 +59,6 @@ async def cmd_words(message: types.Message):
 ##ДОБАВЛЕНИЕ СЛОВ В СПИСОК
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
-    """
-    Обработчик команды /add.
-
-    Добавляет новое слово с переводом в словарь, если слова нет в словаре.
-    Возвращает ошибку, если формат сообщения неправильный.
-
-    :param message: Объект сообщения Telegram.
-    :returns: None.
-    :raises ValueError: Если формат сообщения неверный.
-    """
     try:
         parts = message.text.split(maxsplit=1)
         if len(parts) != 2:
@@ -117,28 +76,12 @@ async def cmd_add(message: types.Message):
 #ФУНКЦИЯ ТЕКСТОВ ПО ГРАММАТИКЕ
 @dp.message(Command("grammar"))
 async def cmd_grammar(message: types.Message):
-    """
-    Обработчик команды /grammar.
-
-    Отправляет пользователю грамматическое правило на основе выбранного уровня и подтемы.
-
-    :param message: Объект сообщения Telegram.
-    :returns: None.
-    """
     levels = "\n".join([f"{level.capitalize()} - /{level}" for level in grammar_rules])
     await message.answer(f"Select a level:\n{levels}")
 
 
 @dp.message(lambda message: message.text.startswith('/') and len(message.text.split('_')) == 1 and message.text[1:] in grammar_rules and message.text[1:] != "test")
 async def handle_level_request(message: types.Message):
-    """
-    Обработчик запроса уровня.
-
-    Отправляет сообщение с доступными подтемами для выбранного уровня.
-
-    :param callback_query: Объект обратного вызова Telegram.
-    :returns: None.
-    """
     level = message.text[1:]
     if level in grammar_rules:
         subtopics = grammar_rules[level]
@@ -150,14 +93,6 @@ async def handle_level_request(message: types.Message):
 
 @dp.message(lambda message: message.text.startswith('/') and len(message.text.split('_')) > 1)
 async def handle_subtopic_request(message: types.Message):
-    """
-    Обработчик запроса подтемы.
-
-    Отправляет грамматическое правило на основе выбранного уровня и подтемы.
-
-    :param callback_query: Объект обратного вызова Telegram.
-    :returns: None.
-    """
     topic = message.text[1:]
     found = False
     for level, subtopics in grammar_rules.items():
@@ -173,14 +108,6 @@ async def handle_subtopic_request(message: types.Message):
 #ТЕСТ НА ЗНАНИЕ СЛОВ
 @dp.message(Command("test"))
 async def cmd_test(message: types.Message):
-    """
-    Обработчик команды /test.
-
-    Запускает словарный тест для пользователя.
-
-    :param message: Объект сообщения Telegram.
-    :returns: None.
-    """
     if not words:
         await message.answer("The list is empty. Add the words with the /add command.")
         return
@@ -191,14 +118,6 @@ async def cmd_test(message: types.Message):
     await ask_next_word(message) 
     
 async def ask_next_word(message: types.Message):
-    """
-   Запрашивает следующее слово в тесте.
-
-   Отправляет пользователю следующее слово из текущего теста.
-
-   :param user_id: int, Telegram ID пользователя.
-   :returns: None.
-   """
     data = await dp.storage.get_data(message.chat.id)
     if data:
         test_words = data.get("test_words")
@@ -214,14 +133,6 @@ async def ask_next_word(message: types.Message):
         
 @dp.message()
 async def check_answer(message: types.Message):
-    """
-   Проверяет ответ пользователя.
-
-   Проверяет ответ пользователя во время теста и отправляет следующий вопрос или показывает финальные результаты.
-
-   :param message: Объект сообщения Telegram.
-   :returns: None.
-    """
     data = await dp.storage.get_data(message.chat.id)
     if data:
         test_words = data.get("test_words")
