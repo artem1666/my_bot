@@ -7,7 +7,7 @@ import webbrowser
 
 
 #ОТКРЫТИЕ ТГ
-webbrowser.open('https://t.me/Teacher0fEnglishBot')
+#webbrowser.open('https://t.me/Teacher0fEnglishBot')
 
 
 #СОЗДАНИЕ БОТА

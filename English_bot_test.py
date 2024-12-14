@@ -1,25 +1,19 @@
 import unittest
-from English_bot import cmd_words, cmd_add, words
+import asyncio
+from unittest.mock import MagicMock
+from English_bot import handle_level_request, grammar_rules
 
 class TestEnglishBot(unittest.TestCase):
 
-    def test_add_and_check(self):
-      class MockMessage:  # создание мок класса для Message
-        def __init__(self, text):
-            self.text = text
-
-      message_mock = MockMessage(text = "/add house дом")
-      cmd_add(message_mock)
-      self.assertIn("house", words)
-      self.assertEqual(words["house"], "дом")
-
-      class MockMessage2:
-            def __init__(self):
-               pass
-
-      message_mock_words = MockMessage2()
-      result = cmd_words(message_mock_words)
-      self.assertIn("house - дом", result)
+    async def test_handle_level_request_correct_level(self):
+         # Создаем мок-объект для message
+        message_mock = MagicMock()
+        message_mock.text = "/a1"
+        # Вызываем функцию
+        await handle_level_request(message_mock)
+        # Проверяем, что функция ответила с нужным текстом
+        expected_answer = "Topics for the level A1: \nPast Simple - /past_simple\nPresent Simple - /present_simple"
+        message_mock.answer.assert_called_with(expected_answer)
 
 
 if __name__ == '__main__':
