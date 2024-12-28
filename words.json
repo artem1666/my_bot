@@ -1,5 +1,17 @@
 {
-    "apple": {
-        "translation": "яблоко"
+    "dog": {
+        "translation": "собака"
+    },
+    "teacher": {
+        "translation": "учитель"
+    },
+    "list": {
+        "translation": "список"
+    },
+    "hourse": {
+        "translation": "конь"
+    },
+    "slow": {
+        "translation": "медленный"
     }
 }

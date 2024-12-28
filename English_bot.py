@@ -6,28 +6,26 @@ import json
 import webbrowser
 
 
-#ОТКРЫТИЕ ТГ
+#
 webbrowser.open('https://t.me/Teacher0fEnglishBot')
 
 
-#СОЗДАНИЕ БОТА
 bot = Bot(token='8042796539:AAFkT26J-Ei4JmD9RtegegNQMLkw_wKT3Hs')
-dp = Dispatcher(bot=bot)
+dp = Dispatcher()
 
 
-##CОЗДАНИЕ СПИСКА СЛОВ
+#
 words = {}
 with open("words.json", "r", encoding="utf-8") as f:
     words = json.load(f)
 
 
-#СОЗДАНИЕ СПИСКА ПРАВИЛ
 grammar_rules = {}
 with open("grammar_rules.json", "r", encoding="utf-8") as f:
     grammar_rules = json.load(f)
         
 
-##ФУНКЦИЯ ДЛЯ СТАРТА
+#
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await message.answer("Hello! I am a bot for learning English.")
@@ -35,7 +33,7 @@ async def cmd_start(message: types.Message):
 To find out what I can do, write /help")
 
 
-##ФУНКЦИЯ ДЛЯ ОПРЕДЕЛЕНИЯ ВОЗМОЖНОСТЕЙ БОТА
+#
 @dp.message(Command('help'))
 async def cmd_help(message: types.Message):
     await message.answer("That's all I can do to help you:\nYou can\
@@ -45,7 +43,7 @@ async def cmd_help(message: types.Message):
  a topic about grammar that you would like to learn - /grammar")
 
 
-##ВЫВОД СПИСКА СЛОВ
+#
 @dp.message(Command("words"))
 async def cmd_words(message: types.Message):
     output_text = "List of words with translation:\n\n"
@@ -56,7 +54,7 @@ async def cmd_words(message: types.Message):
     await message.answer(output_text)
 
 
-##ДОБАВЛЕНИЕ СЛОВ В СПИСОК
+#
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
     try:
@@ -73,7 +71,7 @@ async def cmd_add(message: types.Message):
         await message.answer("The command format is incorrect. Use it: /add English_word Russian_translation")
 
 
-#ФУНКЦИЯ ТЕКСТОВ ПО ГРАММАТИКЕ
+#
 @dp.message(Command("grammar"))
 async def cmd_grammar(message: types.Message):
     levels = "\n".join([f"{level.capitalize()} - /{level}" for level in grammar_rules])
@@ -105,7 +103,7 @@ async def handle_subtopic_request(message: types.Message):
 
 
         
-#ТЕСТ НА ЗНАНИЕ СЛОВ
+#
 @dp.message(Command("test"))
 async def cmd_test(message: types.Message):
     if not words:
@@ -130,7 +128,7 @@ async def ask_next_word(message: types.Message):
             await message.answer(f"The test is completed. You answered correctly {correct_answers} times out of {len(test_words)} words.")
             await dp.storage.set_data(message.chat.id, {"test_words": None, "correct_answers": None, "current_word_index": None, "user_answers": None})
 
-        
+
 @dp.message()
 async def check_answer(message: types.Message):
     data = await dp.storage.get_data(message.chat.id)
@@ -152,7 +150,7 @@ async def check_answer(message: types.Message):
             await dp.storage.set_data(message.chat.id, {"test_words": test_words, "correct_answers": correct_answers, "current_word_index": current_word_index, "user_answers": user_answers})
             await ask_next_word(message)
 
-##ОФОРМЛЕНИЕ БОТА
+#
 async def main():
     await dp.start_polling(bot)
 
